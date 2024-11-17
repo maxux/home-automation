@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Maxux Home Automation Tools</title>
+  <link href="/static/bootstrap.min.css" rel="stylesheet">
+
+  <script src="/static/jquery.min.js"></script>
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#091d36">
+
+  <link rel="apple-touch-icon" href="/static/ios-icon.png">
+  <link rel="icon" type="image/png" href="/static/ios-icon.png">
+</head>
+
+<body class="bg-dark text-white text-center py-5">
+  <h1 class="mb-4">Home Automation</h1>
+
+  <div class="container">
+
+    <div class="row m-1">
+      <button class="btn btn-lg btn-success py-3" data-trigger-id="1">[Plant] Enable Watering</button>
+    </div>
+
+    <div class="row bg-dark m-1">
+      <button class="btn btn-lg btn-outline-danger py-3" data-trigger-id="2">[Plant] Disable Watering</button>
+    </div>
+
+    <hr class="m-4">
+
+    <div class="row m-1">
+      <button class="btn btn-lg btn-success py-3" data-trigger-id="3">[Projector] Power ON</button>
+    </div>
+
+    <div class="row m-1">
+      <button class="btn btn-lg btn-primary py-3" data-trigger-id="5">[Projector] HDMI-1</button>
+    </div>
+
+    <div class="row m-1">
+      <button class="btn btn-lg btn-primary py-3" data-trigger-id="6">[Projector] HDMI-2</button>
+    </div>
+
+    <div class="row m-1">
+      <button class="btn btn-lg btn-outline-danger py-3" data-trigger-id="4">[Projector] Power OFF</button>
+    </div>
+
+    <div class="badge bg-black rounded-pill m-3 fs-6" id="status">System ready</div>
+
+  </div>
+
+    <script>
+    function status_set(classname, msg) {
+        $("#status").removeClass("bg-black bg-warning bg-danger bg-success");
+        $("#status").addClass(classname);
+        $("#status").html(msg);
+    }
+
+    function status_info(msg) {
+        status_set("bg-warning", msg);
+    }
+
+    function status_success(msg) {
+        status_set("bg-success", msg);
+    }
+
+    function status_failed(msg) {
+        status_set("bg-danger", msg);
+    }
+
+    function trigger_done(response) {
+        const status = response.status;
+
+        console.log(status);
+        status_success(status);
+    }
+
+    function trigger_hardware(id) {
+        $.get("/trigger/" + id).done(trigger_done);
+    }
+
+    $(document).ready(function() {
+        $("button").on('click', function (source) {
+            const target = source.target;
+            const trigger = parseInt(target.dataset.triggerId);
+
+            status_info("Sending request to hardware");
+            $.get("/trigger/" + trigger).done(trigger_done);
+        });
+    });
+    </script>
+</body>
+</html>
