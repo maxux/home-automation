@@ -44,6 +44,9 @@ class HomeTools:
 
             self.board.write(f"{value}".encode("utf-8"))
             data = self.hardread()
+            if "security:" in data:
+                # read again, we have watchdog warning in buffer
+                data = self.hardread()
 
             return jsonify({"status": data})
 
